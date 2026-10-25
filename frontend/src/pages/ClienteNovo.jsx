@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { cadastrarCliente } from '../services/clientes.service.js';
 import CamposCliente from '../components/clientes/CamposCliente.jsx';
 import CamposVeiculo from '../components/clientes/CamposVeiculo.jsx';
@@ -56,7 +56,7 @@ export default function ClienteNovo() {
 
   return (
     <section aria-labelledby="titulo-novo-cliente" className="mx-auto max-w-4xl space-y-6">
-      <Link to="/clientes" className="inline-flex min-h-11 items-center text-sm font-medium text-slate-600 underline underline-offset-4">Voltar para clientes</Link>
+      <Botao variante="secundario" onClick={() => navigate('/clientes')}>Voltar para clientes</Botao>
       <div>
         <h1 id="titulo-novo-cliente" className="text-2xl font-semibold tracking-tight">Novo cliente</h1>
         <p className="mt-2 text-sm text-slate-600">Cadastre os dados do cliente e seu primeiro veículo. Os campos opcionais estão identificados.</p>

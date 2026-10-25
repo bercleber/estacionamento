@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { consultarCliente, definirEnderecoPrincipal } from '../services/clientes.service.js';
 import { useAuth } from '../hooks/useAuth.js';
 import FormularioCliente from '../components/clientes/FormularioCliente.jsx';
@@ -17,6 +17,7 @@ import MaisAcoes from '../components/ui/MaisAcoes.jsx';
 import { formatarCpf, formatarTelefone } from '../utils/clientes.js';
 
 export default function ClienteDetalhes() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useLocation();
   const { usuario } = useAuth();
@@ -68,7 +69,7 @@ export default function ClienteDetalhes() {
 
   return (
     <section aria-label="Ficha do cliente" className="space-y-6">
-      <Link to="/clientes" className="inline-flex min-h-11 items-center rounded-lg text-sm font-medium text-slate-600 underline underline-offset-4">Voltar para clientes</Link>
+      <Botao variante="secundario" onClick={() => navigate('/clientes')}>Voltar para clientes</Botao>
       {carregando && !atual ? <p role="status" className="text-sm text-slate-600">Carregando cliente…</p> : erro ? (
         <div className="space-y-3"><h1 className="text-2xl font-semibold">Ficha do cliente</h1><Mensagem>{erro}</Mensagem><Botao variante="secundario" onClick={() => setAtualizacao((valor) => valor + 1)}>Tentar novamente</Botao></div>
       ) : atual && (
