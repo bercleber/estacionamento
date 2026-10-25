@@ -10,7 +10,7 @@ export default async function clientesRoutes(app) {
   const gerenciar = app.autorizar('ADMINISTRADOR', 'GERENTE');
   app.register(veiculosRoutes);
 
-  app.get('/', { schema: schemas.listarClientesSchema }, async () => service.listarClientes());
+  app.get('/', { schema: schemas.listarClientesSchema }, async (request) => service.listarClientes(request.query));
   app.get('/:id', { schema: schemas.consultarClienteSchema }, async (request) => service.consultarCliente(request.params.id));
   app.post('/', { schema: schemas.criarClienteSchema }, async (request, reply) => {
     return reply.code(201).send(await service.cadastrarCliente(request.body, request.usuario.id));

@@ -250,6 +250,20 @@ posteriores das tarifas não recalculam movimentações existentes.
 
 ## Clientes, veículos e endereços
 
+`GET /clientes` aceita os filtros opcionais `busca` (até 150 caracteres: nome,
+CPF com ou sem máscara, ou placa), `tipo` (`HORISTA`/`MENSALISTA`) e `situacao`
+(`ATIVO`/`INATIVO`). Os filtros são combinados; placas de veículos inativos
+também localizam o cliente, sem duplicar resultados.
+
+`POST /clientes` aceita, além do primeiro `veiculo` obrigatório, um objeto
+`endereco` opcional com logradouro, cidade e estado obrigatórios. Cliente,
+veículo e endereço são criados na mesma transação; o primeiro endereço é
+principal. A resposta inclui `veiculos` e `enderecos`.
+
+A consulta individual informa `movimentacao_aberta` no cliente e em cada
+veículo para explicar bloqueios na interface. As regras continuam sendo
+validadas nas operações de alteração.
+
 Todos os endpoints exigem autenticação e retornam `Cache-Control: no-store`.
 
 | Método | Endpoint | Permissão |
@@ -293,8 +307,9 @@ vaga cativa. Clientes não são excluídos fisicamente.
 
 As respostas de clientes contêm `id`, `nome`, `cpf`, `telefone`, `tipo`, `ativo`,
 `vaga_cativa_id` e `vaga_cativa_numero`. A listagem inclui inativos. A consulta
-individual também inclui `enderecos`, ordenados por ID, e `veiculos`, ordenados
-por placa e ID. O cadastro retorna o cliente com o primeiro veículo em `veiculos`.
+individual também inclui `enderecos`, com o principal primeiro e os demais por
+ID, e `veiculos`, ordenados por placa e ID. O cadastro retorna o cliente com o
+primeiro veículo em `veiculos` e o endereço informado em `enderecos`.
 
 A situação recebe `{ "ativo": false }` ou `{ "ativo": true }`, com booleanos
 estritos. A inativação exige ausência de movimentação em aberto e de vaga cativa.

@@ -34,19 +34,35 @@ const enderecoBody = {
   properties: { logradouro: {}, numero: {}, complemento: {}, bairro: {}, cidade: {}, estado: {}, cep: {} },
 };
 
-export const listarClientesSchema = { response: { 200: { type: 'array', items: cliente } } };
+export const listarClientesSchema = {
+  querystring: {
+    type: 'object', additionalProperties: false,
+    properties: {
+      busca: { type: 'string', maxLength: 150 },
+      tipo: { enum: ['HORISTA', 'MENSALISTA'] },
+      situacao: { enum: ['ATIVO', 'INATIVO'] },
+    },
+  },
+  response: { 200: { type: 'array', items: cliente } },
+};
 export const consultarClienteSchema = {
   params,
   response: { 200: {
-    ...cliente, required: [...cliente.required, 'enderecos', 'veiculos'],
-    properties: { ...cliente.properties, enderecos: { type: 'array', items: endereco }, veiculos: { type: 'array', items: veiculoSchema } },
+    ...cliente, required: [...cliente.required, 'enderecos', 'veiculos', 'movimentacao_aberta'],
+    properties: {
+      ...cliente.properties, movimentacao_aberta: { type: 'boolean' }, enderecos: { type: 'array', items: endereco },
+      veiculos: { type: 'array', items: { ...veiculoSchema, properties: { ...veiculoSchema.properties, movimentacao_aberta: { type: 'boolean' } } } },
+    },
   } },
 };
 export const criarClienteSchema = {
-  body: { ...clienteBody, required: ['nome', 'tipo', 'veiculo'], properties: { ...clienteBody.properties, veiculo: criarVeiculoBody } },
+  body: { ...clienteBody, required: ['nome', 'tipo', 'veiculo'], properties: {
+    ...clienteBody.properties, veiculo: criarVeiculoBody,
+    endereco: { ...enderecoBody, required: ['logradouro', 'cidade', 'estado'] },
+  } },
   response: { 201: {
-    ...cliente, required: [...cliente.required, 'veiculos'],
-    properties: { ...cliente.properties, veiculos: { type: 'array', items: veiculoSchema } },
+    ...cliente, required: [...cliente.required, 'veiculos', 'enderecos'],
+    properties: { ...cliente.properties, veiculos: { type: 'array', items: veiculoSchema }, enderecos: { type: 'array', items: endereco } },
   } },
 };
 export const editarClienteSchema = { params, body: { ...clienteBody, minProperties: 1 }, response: { 200: cliente } };

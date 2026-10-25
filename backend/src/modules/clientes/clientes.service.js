@@ -42,8 +42,8 @@ async function gravar(operation, vagaCativa = false) {
   }
 }
 
-export async function listarClientes() {
-  return (await repository.listarClientes()).map(clientePublico);
+export async function listarClientes(filtros = {}) {
+  return (await repository.listarClientes(filtros)).map(clientePublico);
 }
 
 export function consultarCliente(id) {
@@ -51,17 +51,24 @@ export function consultarCliente(id) {
     const cliente = exigirCliente(await repository.buscarCliente(id, connection));
     const enderecos = await repository.listarEnderecos(id, connection);
     const veiculos = await listarVeiculos(id, connection);
-    return { ...clientePublico(cliente), enderecos: enderecos.map(enderecoPublico), veiculos: veiculos.map(veiculoPublico) };
+    const estacionados = new Set((await repository.listarVeiculosEstacionados(id, connection)).map((item) => item.veiculo_id));
+    return {
+      ...clientePublico(cliente), movimentacao_aberta: estacionados.size > 0,
+      enderecos: enderecos.map(enderecoPublico),
+      veiculos: veiculos.map((veiculo) => ({ ...veiculoPublico(veiculo), movimentacao_aberta: estacionados.has(veiculo.id) })),
+    };
   });
 }
 
 export function cadastrarCliente(dados, criadoPor) {
   const normalizados = normalizarCliente(dados);
   const veiculo = normalizarVeiculo(dados.veiculo);
+  const endereco = dados.endereco === undefined ? null : normalizarEndereco(dados.endereco);
   return gravar(async (connection) => {
     const cliente = await repository.criarCliente(normalizados, criadoPor, connection);
     const cadastrado = await criarVeiculoNaTransacao(cliente.id, veiculo, criadoPor, connection);
-    return { ...clientePublico(cliente), veiculos: [cadastrado] };
+    const enderecos = endereco ? [enderecoPublico(await repository.criarEndereco(cliente.id, endereco, true, connection))] : [];
+    return { ...clientePublico(cliente), veiculos: [cadastrado], enderecos };
   });
 }
 

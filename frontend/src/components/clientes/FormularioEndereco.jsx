@@ -1,45 +1,60 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { cadastrarEndereco, editarEndereco } from '../../services/clientes.service.js';
 import Botao from '../ui/Botao.jsx';
-import Campo from '../ui/Campo.jsx';
-import Select from '../ui/Select.jsx';
+import Mensagem from '../ui/Mensagem.jsx';
+import Modal from '../ui/Modal.jsx';
+import CamposEndereco from './CamposEndereco.jsx';
+import useAlteracoesPendentes from '../../hooks/useAlteracoesPendentes.js';
+import { enderecoVazio, formatarCep, validarDadosEndereco, erroDoCampo, focarPrimeiroErro } from '../../utils/clientes.js';
 
-const estados = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
-
-export default function FormularioEndereco({ endereco = null, enviando, onCancelar, onEnviar }) {
-  const [dados, setDados] = useState(() => ({
-    logradouro: endereco?.logradouro ?? '', numero: endereco?.numero ?? '',
-    complemento: endereco?.complemento ?? '', bairro: endereco?.bairro ?? '',
-    cidade: endereco?.cidade ?? '', estado: endereco?.estado ?? '', cep: endereco?.cep ?? '',
-  }));
+export default function FormularioEndereco({ cliente, endereco = null, onFechar, onSalvo }) {
+  const [inicial] = useState(() => Object.fromEntries(Object.keys(enderecoVazio).map((campo) => [campo, campo === 'cep' ? formatarCep(endereco?.cep ?? '') : endereco?.[campo] ?? ''])));
+  const [dados, setDados] = useState(inicial);
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [erros, setErros] = useState({});
+  const formRef = useRef(null);
+  const { permitirSaida, podeFechar } = useAlteracoesPendentes(JSON.stringify(dados) !== JSON.stringify(inicial));
+  function fechar() { if (podeFechar()) onFechar(); }
 
   function alterar(event) {
     const { name, value } = event.target;
-    setDados((atuais) => ({ ...atuais, [name]: value }));
+    setDados((atuais) => ({ ...atuais, [name]: name === 'cep' ? formatarCep(value) : value }));
+    setErros((atuais) => ({ ...atuais, [name]: undefined }));
+  }
+  async function enviar(event) {
+    event.preventDefault();
+    if (enviando) return;
+    const encontrados = validarDadosEndereco(dados);
+    setErros(encontrados);
+    setErro('');
+    if (Object.keys(encontrados).length) { focarPrimeiroErro(formRef.current); return; }
+    setEnviando(true);
+    try {
+      const salvo = endereco ? await editarEndereco(cliente.id, endereco.id, dados) : await cadastrarEndereco(cliente.id, dados);
+      permitirSaida();
+      onSalvo(salvo);
+    } catch (error) {
+      setErros(erroDoCampo(error));
+      setErro([400, 403, 404, 409].includes(error.status) ? error.message : 'Não foi possível salvar o endereço. Tente novamente.');
+      focarPrimeiroErro(formRef.current);
+    } finally { setEnviando(false); }
   }
 
   return (
-    <form onSubmit={(event) => { event.preventDefault(); if (!enviando) onEnviar(dados); }} className="space-y-5" aria-busy={enviando}>
-      <fieldset disabled={enviando} className="space-y-5">
-        <legend className="sr-only">Dados do endereço</legend>
-        <Campo label="Logradouro" name="logradouro" value={dados.logradouro} onChange={alterar} maxLength={150} autoComplete="address-line1" required autoFocus />
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Campo label="Número (opcional)" name="numero" value={dados.numero} onChange={alterar} maxLength={20} />
-          <Campo label="Complemento (opcional)" name="complemento" value={dados.complemento} onChange={alterar} maxLength={100} autoComplete="address-line2" />
+    <Modal titulo={endereco ? 'Editar endereço' : 'Adicionar endereço'} onFechar={fechar} bloqueada={enviando}>
+      <form ref={formRef} onSubmit={enviar} noValidate className="space-y-5" aria-busy={enviando}>
+        <p className="break-words text-sm text-slate-600">Cliente: <strong>{cliente.nome}</strong></p>
+        <fieldset disabled={enviando} className="space-y-5">
+          <legend className="sr-only">Dados do endereço</legend>
+          <CamposEndereco dados={dados} onAlterar={alterar} erros={erros} autoFocus />
+        </fieldset>
+        <Mensagem>{erro}</Mensagem>
+        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+          <Botao variante="secundario" onClick={fechar} disabled={enviando}>Cancelar</Botao>
+          <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : endereco ? 'Salvar alterações' : 'Adicionar endereço'}</Botao>
         </div>
-        <Campo label="Bairro (opcional)" name="bairro" value={dados.bairro} onChange={alterar} maxLength={100} />
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Campo label="Cidade" name="cidade" value={dados.cidade} onChange={alterar} maxLength={100} autoComplete="address-level2" required />
-          <Select label="UF" name="estado" value={dados.estado} onChange={alterar} autoComplete="address-level1" required>
-            <option value="">Selecione</option>
-            {estados.map((estado) => <option key={estado} value={estado}>{estado}</option>)}
-          </Select>
-        </div>
-        <Campo label="CEP (opcional)" name="cep" value={dados.cep} onChange={alterar} maxLength={9} inputMode="numeric" autoComplete="postal-code" />
-      </fieldset>
-      <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
-        <Botao variante="secundario" onClick={onCancelar} disabled={enviando}>Cancelar</Botao>
-        <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : endereco ? 'Salvar alterações' : 'Adicionar endereço'}</Botao>
-      </div>
-    </form>
+      </form>
+    </Modal>
   );
 }

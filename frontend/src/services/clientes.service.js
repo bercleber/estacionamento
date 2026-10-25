@@ -1,7 +1,11 @@
 import { api } from './api.js';
 
-export function listarClientes(options = {}) {
-  return api('/clientes', options);
+export function listarClientes({ busca = '', tipo = '', situacao = '', ...options } = {}) {
+  const filtros = new URLSearchParams();
+  if (busca.trim()) filtros.set('busca', busca.trim());
+  if (tipo) filtros.set('tipo', tipo);
+  if (situacao) filtros.set('situacao', situacao);
+  return api(`/clientes${filtros.size ? `?${filtros}` : ''}`, options);
 }
 
 export function consultarCliente(id, options = {}) {

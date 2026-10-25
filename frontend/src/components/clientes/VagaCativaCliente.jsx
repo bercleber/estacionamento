@@ -5,6 +5,7 @@ import Botao from '../ui/Botao.jsx';
 import Select from '../ui/Select.jsx';
 import Mensagem from '../ui/Mensagem.jsx';
 import Modal from '../ui/Modal.jsx';
+import useAlteracoesPendentes from '../../hooks/useAlteracoesPendentes.js';
 
 export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
   const [atual, setAtual] = useState(cliente);
@@ -15,6 +16,8 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
   const [erro, setErro] = useState('');
   const [erroCarga, setErroCarga] = useState('');
   const [atualizacao, setAtualizacao] = useState(0);
+  const { permitirSaida, podeFechar } = useAlteracoesPendentes(!carregando && vagaId !== (atual.vaga_cativa_id === null ? '' : String(atual.vaga_cativa_id)));
+  function fechar() { if (podeFechar()) onFechar(); }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -42,7 +45,11 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
     if (enviando || carregando || erroCarga) return;
     setEnviando(true);
     setErro('');
-    try { onSalvo(await alterarVagaCativa(cliente.id, vagaId === '' ? null : Number(vagaId))); }
+    try {
+      const salvo = await alterarVagaCativa(cliente.id, vagaId === '' ? null : Number(vagaId));
+      permitirSaida();
+      onSalvo(salvo);
+    }
     catch (error) {
       setErro([400, 403, 404, 409].includes(error.status)
         ? error.message : 'Não foi possível atualizar a vaga cativa. Tente novamente.');
@@ -50,7 +57,7 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
   }
 
   return (
-    <Modal titulo="Vaga cativa" onFechar={onFechar} bloqueada={enviando}>
+    <Modal titulo="Vaga cativa" onFechar={fechar} bloqueada={enviando}>
       <div className="space-y-5">
         <p className="break-words text-sm text-slate-600">Cliente: <strong>{atual.nome}</strong></p>
         {carregando ? <p role="status" className="text-sm text-slate-600">Carregando vagas…</p> : erroCarga ? (
@@ -72,7 +79,7 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
             {elegivel && !vagas.some((vaga) => vaga.disponibilidade === 'LIVRE') && <p className="text-sm text-slate-600">Não há novas vagas livres para atribuição.</p>}
             <Mensagem>{erro}</Mensagem>
             <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
-              <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
+              <Botao variante="secundario" onClick={fechar} disabled={enviando}>Cancelar</Botao>
               <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar vínculo'}</Botao>
             </div>
           </form>

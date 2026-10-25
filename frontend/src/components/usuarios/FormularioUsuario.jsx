@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth.js';
 import { nomesPerfis } from '../../utils/perfis.js';
 import Botao from '../ui/Botao.jsx';
 import Campo from '../ui/Campo.jsx';
+import CampoSenha from '../ui/CampoSenha.jsx';
 import Mensagem from '../ui/Mensagem.jsx';
 import Modal from '../ui/Modal.jsx';
 import Select from '../ui/Select.jsx';
@@ -69,9 +70,9 @@ export default function FormularioUsuario({ usuario = null, onFechar, onSalvo })
           {!editando && (
             <>
               <div className="grid gap-5 sm:grid-cols-2">
-                <Campo label="Senha" name="senha" type="password" value={dados.senha} onChange={alterar}
+                <CampoSenha label="Senha" name="senha" value={dados.senha} onChange={alterar}
                   autoComplete="new-password" minLength={8} maxLength={128} required />
-                <Campo label="Confirmar senha" name="confirmacao" type="password" value={dados.confirmacao} onChange={alterar}
+                <CampoSenha label="Confirmar senha" name="confirmacao" value={dados.confirmacao} onChange={alterar}
                   autoComplete="new-password" minLength={8} maxLength={128} required />
               </div>
               <p className="text-sm text-slate-500">A senha deve ter entre 8 e 128 caracteres.</p>

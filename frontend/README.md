@@ -145,8 +145,9 @@ as modais avisam sobre esse encerramento antes de confirmar a operação.
 
 ## Alteração da própria senha
 
-O botão **Alterar senha** fica no cabeçalho para administrador, gerente e operador.
-Ele abre uma modal com senha atual, nova senha e confirmação. A nova senha deve
+O botão com engrenagem no cabeçalho abre o menu de configurações do usuário para
+todos os perfis. O menu fecha ao clicar fora, sair com Tab ou pressionar Escape.
+A opção **Alterar senha** abre uma modal com senha atual, nova senha e confirmação. A nova senha deve
 ter entre 8 e 128 caracteres; a confirmação é conferida no frontend. As senhas
 são enviadas sem remoção de espaços e não são persistidas no navegador.
 
@@ -189,49 +190,33 @@ as permissões também são verificadas pelo backend.
 
 ## Clientes, veículos e endereços
 
-O item **Clientes**, em `/clientes`, fica disponível para todos os perfis e lista
-nome, CPF, telefone, tipo, vaga cativa e situação, incluindo clientes inativos.
-O botão **Novo cliente** abre uma modal com duas seções: dados do cliente e
-primeiro veículo obrigatório. Em telas maiores, as seções ficam lado a lado;
-em telas menores, ficam empilhadas. O envio usa um único `POST /clientes`, com
-o objeto `veiculo`. Cliente e veículo são cadastrados juntos; uma falha mantém
-o formulário preenchido e não deixa um cliente parcialmente cadastrado.
+O item **Clientes**, em `/clientes`, oferece busca por nome, CPF ou placa, filtros
+por tipo e situação e contagem dos resultados. Os filtros ficam na URL. A
+listagem usa tabela no desktop e cartões em telas menores, com **Ver cliente**.
+Estados vazios distinguem ausência de cadastros de busca sem resultados.
 
-Cada linha oferece **Abrir ficha**, em `/clientes/:id`. A ficha reúne dados,
-situação, vaga cativa e veículos do cliente, com acesso às modais de edição e
-endereços. Administrador e gerente também podem ativar/inativar com confirmação
-e gerenciar a vaga cativa de mensalistas. Após o cadastro conjunto, a aplicação
-abre a ficha do novo cliente com uma confirmação.
+**Novo cliente** abre `/clientes/novo`, com dados do cliente, primeiro veículo
+obrigatório e seção expansível de endereço opcional. Um único `POST /clientes`
+salva cliente, veículo e endereço informado na mesma transação. Outros veículos
+e endereços são adicionados pela ficha, em `/clientes/:id`.
 
-CPF e telefone são opcionais. CPF pode ser informado com ou sem máscara. O
-backend valida o documento e sua unicidade, inclusive entre inativos. Erros de
-validação e conflitos aparecem na modal; o formulário permanece preenchido.
-Ao concluir uma alteração na ficha, seus dados são recarregados. A listagem
-também consulta os dados novamente quando o usuário retorna a `/clientes`.
+A ficha mostra dados, tipo, situação e, para mensalistas, vaga cativa. Veículos e
+endereços aparecem diretamente na página, com o endereço principal primeiro.
+Cada seção possui sua ação de adicionar e mensagens de retorno próprias.
+Modais executam apenas uma tarefa: editar dados, adicionar/editar um veículo,
+adicionar/editar um endereço ou confirmar uma ação. A remoção de endereço exige
+confirmação; se ele for principal, o restante mais antigo assume essa condição.
 
-Veículos são gerenciados exclusivamente na ficha, sem página ou seleção de
-proprietário separadas. Todos os perfis podem adicionar e editar veículos em
-modal. Ativação/inativação é exclusiva de administrador e gerente, com
-confirmação. Placa é obrigatória e única; modelo e cor são opcionais. A ficha
-exibe todos os veículos vinculados, inclusive inativos. Cliente inativo não
-recebe novos veículos e seus veículos não podem ser reativados; as demais
-edições continuam disponíveis. O backend aplica os bloqueios por movimentação.
+CPF, telefone e CEP recebem formatação, e placas aparecem em maiúsculas. Erros
+são associados aos campos, o primeiro inválido recebe foco e os dados são
+preservados. Sair com alterações não salvas exige confirmação, inclusive ao
+fechar modais. Recarregar ou fechar a aba usa o aviso nativo do navegador.
 
-A modal **Endereços** permite adicionar, editar, escolher o principal e remover
-endereços com confirmação. O formulário e a confirmação são exibidos dentro da
-mesma modal, sem sobrepor diálogos. O primeiro endereço é principal; ao remover
-o principal, o mais antigo entre os restantes assume essa condição. A lista é
-recarregada depois de cada alteração.
-
-A modal **Vaga cativa** consulta os dados atuais do cliente e as vagas. Oferece
-vagas livres e o vínculo atual, além de **Sem vaga cativa** para remoção. O backend
-confere novamente disponibilidade, tipo, situação e movimentações em aberto
-antes de salvar. A atribuição é exclusiva de mensalistas ativos.
-
-Durante as gravações, os controles e o fechamento das modais ficam bloqueados.
-As telas de consulta possuem estados de carregamento, erro, lista vazia e uma
-opção de tentar novamente. Endereços são carregados pela consulta individual
-`GET /clientes/:id`; as chamadas ficam em `src/services/clientes.service.js`.
+Todos os perfis podem consultar e editar dados, veículos e endereços. Somente
+administrador e gerente gerenciam vaga cativa e ativação/inativação, estas no
+menu **Mais ações** e com confirmação. Bloqueios por veículo estacionado, vaga
+cativa e cliente inativo têm explicações na interface; o backend os revalida.
+Durante gravações, os controles e o fechamento das modais ficam bloqueados.
 
 ## Movimentações e entrada
 

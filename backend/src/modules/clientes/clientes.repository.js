@@ -4,8 +4,22 @@ const consulta = `SELECT c.id, c.nome, c.cpf, c.telefone, c.tipo, c.vaga_cativa_
   v.numero AS vaga_cativa_numero, c.ativo FROM clientes c
   LEFT JOIN vagas v ON v.id = c.vaga_cativa_id`;
 
-export function listarClientes() {
-  return getPool().query(`${consulta} ORDER BY c.nome, c.id`);
+export function listarClientes({ busca = '', tipo, situacao } = {}) {
+  const condicoes = [];
+  const parametros = [];
+  const termo = busca.trim();
+  if (termo) {
+    // LOCATE trata caracteres como % e _ literalmente; todos os valores são parametrizados.
+    const cpf = termo.replace(/[.\-\s]/g, '');
+    const placa = termo.replace(/[-\s]/g, '').toUpperCase();
+    condicoes.push(`(LOCATE(?, c.nome) > 0
+      OR (? <> '' AND LOCATE(?, c.cpf) > 0)
+      OR (? <> '' AND EXISTS (SELECT 1 FROM veiculos ve WHERE ve.cliente_id = c.id AND LOCATE(?, ve.placa) > 0)))`);
+    parametros.push(termo, /^[0-9]+$/.test(cpf) ? cpf : '', /^[0-9]+$/.test(cpf) ? cpf : '', placa, placa);
+  }
+  if (tipo) { condicoes.push('c.tipo = ?'); parametros.push(tipo); }
+  if (situacao) { condicoes.push('c.ativo = ?'); parametros.push(situacao === 'ATIVO'); }
+  return getPool().query(`${consulta}${condicoes.length ? ` WHERE ${condicoes.join(' AND ')}` : ''} ORDER BY c.nome, c.id`, parametros);
 }
 
 export async function buscarCliente(id, connection = getPool()) {
@@ -25,6 +39,10 @@ export async function possuiMovimentacaoAberta(id, connection) {
     'SELECT id FROM movimentacoes WHERE cliente_id = ? AND saida_em IS NULL LIMIT 1 FOR UPDATE', [id],
   );
   return rows.length > 0;
+}
+
+export function listarVeiculosEstacionados(clienteId, connection) {
+  return connection.query('SELECT veiculo_id FROM movimentacoes WHERE cliente_id = ? AND saida_em IS NULL', [clienteId]);
 }
 
 export async function criarCliente(dados, criadoPor, connection) {
@@ -73,7 +91,7 @@ export async function alterarVagaCativa(id, vagaId, connection) {
 
 export function listarEnderecos(clienteId, connection = getPool(), bloquear = false) {
   return connection.query(`SELECT id, cliente_id, logradouro, numero, complemento, bairro,
-    cidade, estado, cep, principal FROM enderecos WHERE cliente_id = ? ORDER BY id${bloquear ? ' FOR UPDATE' : ''}`, [clienteId]);
+    cidade, estado, cep, principal FROM enderecos WHERE cliente_id = ? ORDER BY principal DESC, id${bloquear ? ' FOR UPDATE' : ''}`, [clienteId]);
 }
 
 async function buscarEndereco(id, clienteId, connection) {

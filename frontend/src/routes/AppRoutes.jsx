@@ -9,6 +9,7 @@ import Vagas from '../pages/Vagas.jsx';
 import Tarifas from '../pages/Tarifas.jsx';
 import Clientes from '../pages/Clientes.jsx';
 import ClienteDetalhes from '../pages/ClienteDetalhes.jsx';
+import ClienteNovo from '../pages/ClienteNovo.jsx';
 import Movimentacoes from '../pages/Movimentacoes.jsx';
 import HistoricoMovimentacoes from '../pages/HistoricoMovimentacoes.jsx';
 
@@ -24,6 +25,7 @@ export default function AppRoutes() {
           <Route path="vagas" element={<Vagas />} />
           <Route path="tarifas" element={<Tarifas />} />
           <Route path="clientes" element={<Clientes />} />
+          <Route path="clientes/novo" element={<ClienteNovo />} />
           <Route path="clientes/:id" element={<ClienteDetalhes />} />
           <Route element={<RotaProtegida perfis={['ADMINISTRADOR']} />}>
             <Route path="usuarios" element={<Usuarios />} />

@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router';
 import { useAuth } from '../hooks/useAuth.js';
 import Botao from '../components/ui/Botao.jsx';
 import Campo from '../components/ui/Campo.jsx';
+import CampoSenha from '../components/ui/CampoSenha.jsx';
 import Mensagem from '../components/ui/Mensagem.jsx';
 
 export default function Login() {
@@ -47,7 +48,8 @@ export default function Login() {
         <form onSubmit={enviar} className="mt-7 space-y-5" aria-busy={enviando}>
           <Campo label="Login" name="login" autoComplete="username" required maxLength={100}
             value={login} onChange={(event) => setLogin(event.target.value)} disabled={enviando} />
-          <Campo label="Senha" name="senha" type="password" autoComplete="current-password" required maxLength={128}
+          <CampoSenha label="Senha" id="login-senha" name="senha"
+            autoComplete="current-password" required maxLength={128}
             value={senha} onChange={(event) => setSenha(event.target.value)} disabled={enviando} />
           <Mensagem>{erro}</Mensagem>
           <Botao type="submit" disabled={enviando} className="w-full">

@@ -1,11 +1,12 @@
 import Botao from '../ui/Botao.jsx';
+import MaisAcoes from '../ui/MaisAcoes.jsx';
 
 export default function VeiculosCliente({ cliente, podeGerenciar, onNovo, onEditar, onSituacao }) {
   return (
     <section aria-labelledby="titulo-veiculos-cliente" className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 id="titulo-veiculos-cliente" className="text-lg font-semibold">Veículos</h2>
+          <h2 id="titulo-veiculos-cliente" className="text-lg font-semibold">Veículos <span className="text-sm font-normal text-slate-500">({cliente.veiculos.length})</span></h2>
           <p className="mt-1 text-sm text-slate-600">Veículos vinculados a este cliente.</p>
         </div>
         <Botao onClick={onNovo} disabled={!cliente.ativo}>Adicionar veículo</Botao>
@@ -25,12 +26,15 @@ export default function VeiculosCliente({ cliente, podeGerenciar, onNovo, onEdit
                 <div><dt className="text-slate-500">Modelo</dt><dd className="mt-1 break-words">{veiculo.modelo ?? '—'}</dd></div>
                 <div><dt className="text-slate-500">Cor</dt><dd className="mt-1 break-words">{veiculo.cor ?? '—'}</dd></div>
               </dl>
+              {veiculo.movimentacao_aberta && <p className="text-sm text-amber-800">Veículo estacionado. Registre a saída antes de alterar a placa ou inativar.</p>}
               <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
                 <Botao variante="secundario" onClick={() => onEditar(veiculo)} aria-label={`Editar veículo ${veiculo.placa}`}>Editar</Botao>
-                {podeGerenciar && <Botao variante="secundario" onClick={() => onSituacao(veiculo)}
-                  disabled={!veiculo.ativo && !cliente.ativo} aria-label={`${veiculo.ativo ? 'Inativar' : 'Ativar'} veículo ${veiculo.placa}`}>
-                  {veiculo.ativo ? 'Inativar' : 'Ativar'}
-                </Botao>}
+                {podeGerenciar && <MaisAcoes ariaLabel={`Mais ações do veículo ${veiculo.placa}`}>
+                  <Botao variante="secundario" className="w-full" onClick={() => onSituacao(veiculo)}
+                    disabled={veiculo.ativo ? veiculo.movimentacao_aberta : !cliente.ativo} aria-label={`${veiculo.ativo ? 'Inativar' : 'Ativar'} veículo ${veiculo.placa}`}>
+                    {veiculo.ativo ? 'Inativar' : 'Ativar'} veículo
+                  </Botao>
+                </MaisAcoes>}
               </div>
             </li>
           ))}

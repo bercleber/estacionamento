@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth.js';
 import Botao from '../ui/Botao.jsx';
-import Campo from '../ui/Campo.jsx';
+import CampoSenha from '../ui/CampoSenha.jsx';
 import Mensagem from '../ui/Mensagem.jsx';
 import Modal from '../ui/Modal.jsx';
 
@@ -48,11 +48,11 @@ export default function FormularioSenha({ onFechar }) {
       <form onSubmit={enviar} className="space-y-5" aria-busy={enviando}>
         <fieldset disabled={enviando} className="space-y-5">
           <legend className="sr-only">Alteração da própria senha</legend>
-          <Campo label="Senha atual" name="atual" type="password" value={dados.atual} onChange={alterar}
+          <CampoSenha label="Senha atual" name="atual" value={dados.atual} onChange={alterar}
             autoComplete="current-password" maxLength={128} required autoFocus />
-          <Campo label="Nova senha" name="nova" type="password" value={dados.nova} onChange={alterar}
+          <CampoSenha label="Nova senha" name="nova" value={dados.nova} onChange={alterar}
             autoComplete="new-password" minLength={8} maxLength={128} required />
-          <Campo label="Confirmar nova senha" name="confirmacao" type="password" value={dados.confirmacao} onChange={alterar}
+          <CampoSenha label="Confirmar nova senha" name="confirmacao" value={dados.confirmacao} onChange={alterar}
             autoComplete="new-password" minLength={8} maxLength={128} required />
           <p className="text-sm text-slate-600">A nova senha deve ter entre 8 e 128 caracteres. Após salvar, você precisará entrar novamente.</p>
         </fieldset>
