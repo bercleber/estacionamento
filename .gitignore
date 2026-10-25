@@ -1,0 +1,12 @@
+# Dependências e arquivos gerados
+node_modules/
+dist/
+*.log
+
+# Configurações e credenciais locais
+.env
+.env.*
+!.env.example
+credenciais.local.md
+mise.local.toml
+.mise.local.toml
