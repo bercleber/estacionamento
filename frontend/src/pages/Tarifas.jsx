@@ -1,3 +1,7 @@
+import TituloPagina from '../components/ui/TituloPagina.jsx';
+import EstadoVazio from '../components/ui/EstadoVazio.jsx';
+import Icone from '../components/ui/Icone.jsx';
+import Carregando from '../components/ui/Carregando.jsx';
 import { useEffect, useState } from 'react';
 import FormularioTarifas from '../components/tarifas/FormularioTarifas.jsx';
 import Botao from '../components/ui/Botao.jsx';
@@ -38,17 +42,9 @@ export default function Tarifas() {
 
   return (
     <section aria-labelledby="titulo-tarifas" className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 id="titulo-tarifas" className="text-2xl font-semibold tracking-tight">Tarifas</h1>
-          <p className="mt-2 text-sm text-slate-600">Consulte os valores por hora e por mês do estacionamento.</p>
-        </div>
-        {podeGerenciar && !carregando && !erro && (
-          <Botao onClick={() => { setSucesso(''); setFormularioAberto(true); }}>
-            {tarifa ? 'Alterar tarifas' : 'Cadastrar tarifas'}
-          </Botao>
-        )}
-      </div>
+      <TituloPagina id="titulo-tarifas" icone="tarifas" titulo="Tarifas" descricao="Consulte os valores por hora e por mês do estacionamento.">
+        {podeGerenciar && !carregando && !erro && <Botao onClick={() => { setSucesso(''); setFormularioAberto(true); }}><Icone nome={tarifa ? 'editar' : 'adicionar'} />{tarifa ? 'Alterar tarifas' : 'Cadastrar tarifas'}</Botao>}
+      </TituloPagina>
 
       <Mensagem tipo="sucesso">{sucesso}</Mensagem>
       {erro && (
@@ -58,19 +54,21 @@ export default function Tarifas() {
         </div>
       )}
 
-      {carregando ? <p role="status" className="text-sm text-slate-600">Carregando tarifas…</p> : !erro && (
+      {carregando ? <Carregando>Carregando tarifas…</Carregando> : !erro && (
         tarifa ? (
-          <dl className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-6">
-              <dt className="text-sm font-medium text-slate-600">Valor por hora</dt>
-              <dd className="mt-3 break-words text-2xl font-semibold tracking-tight">{moeda.format(tarifa.valor_hora)}</dd>
+          <dl className="grid gap-5 md:grid-cols-2">
+            <div className="vp-panel border-t-4 border-t-blue-500 p-6 sm:p-8">
+              <dt className="flex items-center gap-3 text-sm font-bold text-muted"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Icone nome="relogio" /></span>Valor por hora</dt>
+              <dd className="mt-6 break-words text-4xl font-extrabold tracking-tight text-ink tabular-nums">{moeda.format(tarifa.valor_hora)}</dd>
+              <dd className="mt-3 text-sm text-muted">Tarifa para permanências de clientes horistas.</dd>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6">
-              <dt className="text-sm font-medium text-slate-600">Valor mensal</dt>
-              <dd className="mt-3 break-words text-2xl font-semibold tracking-tight">{moeda.format(tarifa.valor_mes)}</dd>
+            <div className="vp-panel border-t-4 border-t-teal-500 p-6 sm:p-8">
+              <dt className="flex items-center gap-3 text-sm font-bold text-muted"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-700"><Icone nome="calendario" /></span>Valor mensal</dt>
+              <dd className="mt-6 break-words text-4xl font-extrabold tracking-tight text-ink tabular-nums">{moeda.format(tarifa.valor_mes)}</dd>
+              <dd className="mt-3 text-sm text-muted">Tarifa mensal de referência para mensalistas.</dd>
             </div>
           </dl>
-        ) : <p className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600">Nenhuma tarifa cadastrada.</p>
+        ) : <EstadoVazio icone="tarifas" titulo="Nenhuma tarifa cadastrada" descricao={podeGerenciar ? 'Cadastre os valores para começar a utilizar as tarifas do estacionamento.' : 'Os valores aparecerão aqui após o cadastro.'} />
       )}
 
       {podeGerenciar && formularioAberto && (

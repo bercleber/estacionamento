@@ -1,16 +1,278 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: Manrope;
+  src: url('../assets/fonts/Manrope-Variable.ttf') format('truetype');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: system-ui, sans-serif;
-  --color-primary: #334155;
+  --font-sans: Manrope, system-ui, sans-serif;
+  --color-primary: #2563eb;
+  --color-ink: #17243b;
+  --color-muted: #526078;
+  --color-aqua: #0d9488;
 }
 
 @layer base {
   body {
-    @apply m-0 bg-slate-50 font-sans text-slate-900 antialiased;
+    @apply m-0 min-w-0 font-sans text-ink antialiased;
+    background-color: #f3f6fb;
+    background-image:
+      radial-gradient(ellipse at 8% 5%, #dbe7ff 0, transparent 48%),
+      radial-gradient(ellipse at 100% 85%, #d6f1e9 0, transparent 45%);
+    background-attachment: fixed;
   }
 
   :focus-visible {
     @apply outline-2 outline-offset-4 outline-primary;
+  }
+
+  button:not(:disabled), summary, select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: #dbeafe;
+    color: #17243b;
+  }
+}
+
+@layer components {
+  .vp-glass {
+    border: 1px solid rgb(255 255 255 / 85%);
+    background: rgb(255 255 255 / 82%);
+    box-shadow: 0 8px 32px -16px rgb(32 62 106 / 20%), inset 0 1px 0 rgb(255 255 255 / 80%);
+    backdrop-filter: blur(20px);
+  }
+
+  .vp-brand-symbol {
+    @apply flex shrink-0 items-center justify-center rounded-2xl text-white;
+    background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+    box-shadow: 0 6px 16px -6px rgb(37 99 235 / 45%);
+  }
+
+  .vp-button {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold;
+    transition: background-color 160ms, border-color 160ms, box-shadow 160ms;
+  }
+
+  .vp-button:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .vp-button-primary {
+    @apply border border-primary bg-primary text-white;
+    box-shadow: 0 4px 10px -5px rgb(37 99 235 / 55%);
+  }
+
+  .vp-button-primary:hover:not(:disabled) {
+    @apply border-blue-700 bg-blue-700;
+  }
+
+  .vp-button-secondary {
+    @apply border border-slate-300 bg-white text-ink;
+  }
+
+  .vp-button-secondary:hover:not(:disabled) {
+    @apply border-blue-300 bg-blue-50;
+  }
+
+  .vp-button-danger {
+    @apply border border-red-700 bg-red-700 text-white;
+  }
+
+  .vp-button-danger:hover:not(:disabled) {
+    @apply border-red-800 bg-red-800;
+  }
+
+  .vp-field {
+    @apply min-h-12 w-full rounded-xl border border-slate-400 bg-white px-3.5 py-2.5 text-base text-ink;
+    transition: border-color 160ms, box-shadow 160ms;
+  }
+
+  .vp-field::placeholder {
+    @apply text-slate-500;
+  }
+
+  .vp-field:focus-visible {
+    @apply border-primary outline-2 outline-offset-2 outline-primary;
+  }
+
+  .vp-field[aria-invalid='true'] {
+    @apply border-red-600;
+  }
+
+  .vp-field:disabled {
+    @apply cursor-not-allowed border-slate-300 bg-slate-100 text-slate-600;
+  }
+
+  .vp-menu {
+    @apply rounded-2xl border border-slate-200 p-2 text-ink;
+    background: rgb(255 255 255 / 98%);
+    box-shadow: 0 12px 36px -12px rgb(23 36 59 / 24%);
+  }
+
+  .vp-dialog {
+    @apply rounded-3xl border border-white p-0 text-ink;
+    background: rgb(255 255 255 / 97%);
+    box-shadow: 0 24px 80px -20px rgb(23 36 59 / 30%);
+  }
+
+  .vp-dialog::backdrop, .vp-drawer::backdrop {
+    background: rgb(23 36 59 / 36%);
+    backdrop-filter: blur(5px);
+  }
+
+  .vp-login {
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgb(167 196 255 / 60%), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgb(153 226 204 / 45%), transparent 50%);
+  }
+
+  .vp-panel {
+    @apply rounded-3xl border border-white;
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 8px 28px -20px rgb(32 62 106 / 25%);
+  }
+
+  .vp-dashboard-highlight {
+    @apply rounded-3xl border border-blue-500 text-white;
+    background: linear-gradient(145deg, #2563eb, #1e40af);
+    box-shadow: 0 12px 28px -16px rgb(37 99 235 / 60%);
+  }
+
+  .vp-dashboard-ring {
+    display: grid;
+    place-items: center;
+    width: 12rem;
+    height: 12rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #e2e8f0;
+  }
+
+  .vp-inset {
+    @apply rounded-2xl border border-blue-100 bg-blue-50/60 p-4 sm:p-5;
+  }
+
+  .vp-table {
+    @apply w-full text-left text-sm;
+  }
+
+  .vp-table thead {
+    @apply border-b border-blue-100 bg-blue-50/70 text-muted;
+  }
+
+  .vp-table th {
+    @apply px-5 py-4 text-xs font-bold tracking-wide;
+  }
+
+  .vp-table td {
+    @apply px-5 py-4;
+  }
+
+  .vp-table tbody > tr + tr {
+    @apply border-t border-slate-100;
+  }
+
+  .vp-table tbody > tr:hover {
+    @apply bg-blue-50/40;
+  }
+
+  .vp-table th:last-child, .vp-table td:last-child {
+    @apply pr-6;
+  }
+
+  .vp-table thead th:first-child {
+    border-top-left-radius: 1.5rem;
+  }
+
+  .vp-table thead th:last-child {
+    border-top-right-radius: 1.5rem;
+  }
+
+  .vp-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 1.5rem;
+  }
+
+  .vp-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 1.5rem;
+  }
+
+  .vp-badge {
+    @apply inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .vp-form-actions {
+    @apply flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5;
+  }
+
+  .vp-dialog .vp-form-actions {
+    position: sticky;
+    bottom: calc(-1 * var(--dialog-padding));
+    z-index: 5;
+    padding-top: 1rem;
+    padding-bottom: var(--dialog-padding);
+    margin-bottom: calc(-1 * var(--dialog-padding));
+    background: #fff;
+    box-shadow: 0 -8px 20px -18px rgb(23 36 59 / 30%);
+  }
+
+  .vp-dialog-body {
+    --dialog-padding: 1.25rem;
+    min-width: 0;
+    padding: var(--dialog-padding);
+  }
+
+  .vp-dialog-body fieldset {
+    min-width: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .vp-dialog-body {
+      --dialog-padding: 1.5rem;
+    }
+  }
+
+  .vp-record-details {
+    @apply grid min-w-0 gap-4 text-sm;
+  }
+
+  .vp-record-details dt {
+    @apply text-muted;
+  }
+
+  .vp-record-details dd {
+    @apply mt-1 break-words font-medium text-ink;
+  }
+
+  .vp-plate {
+    @apply inline-flex max-w-full break-all rounded-xl border border-blue-100 bg-blue-50 px-3 py-1.5 font-mono font-bold tracking-wider text-blue-900;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .vp-glass {
+      background: #f8faff;
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .vp-glass, .vp-menu, .vp-dialog, .vp-panel {
+      background: #fff;
+      backdrop-filter: none;
+    }
+
+    .vp-dialog::backdrop, .vp-drawer::backdrop {
+      backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vp-button, .vp-field, .vp-nav-link {
+      transition: none;
+    }
   }
 }

@@ -1,3 +1,6 @@
+import Icone from '../components/ui/Icone.jsx';
+import Selo from '../components/ui/Selo.jsx';
+import Carregando from '../components/ui/Carregando.jsx';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { consultarCliente, definirEnderecoPrincipal } from '../services/clientes.service.js';
@@ -69,31 +72,34 @@ export default function ClienteDetalhes() {
 
   return (
     <section aria-label="Ficha do cliente" className="space-y-6">
-      <Botao variante="secundario" onClick={() => navigate('/clientes')}>Voltar para clientes</Botao>
-      {carregando && !atual ? <p role="status" className="text-sm text-slate-600">Carregando cliente…</p> : erro ? (
-        <div className="space-y-3"><h1 className="text-2xl font-semibold">Ficha do cliente</h1><Mensagem>{erro}</Mensagem><Botao variante="secundario" onClick={() => setAtualizacao((valor) => valor + 1)}>Tentar novamente</Botao></div>
+      <Botao variante="secundario" onClick={() => navigate('/clientes')}><Icone nome="voltar" />Voltar para clientes</Botao>
+      {carregando && !atual ? <Carregando>Carregando cliente…</Carregando> : erro ? (
+        <div className="space-y-3"><h1 className="text-2xl font-extrabold tracking-tight">Ficha do cliente</h1><Mensagem>{erro}</Mensagem><Botao variante="secundario" onClick={() => setAtualizacao((valor) => valor + 1)}>Tentar novamente</Botao></div>
       ) : atual && (
         <>
-          <section aria-labelledby="titulo-ficha-cliente" className="space-y-4 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+          <section aria-labelledby="titulo-ficha-cliente" className="vp-panel space-y-5 p-5 sm:p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0"><p className="text-sm text-slate-500">Ficha do cliente</p><h1 id="titulo-ficha-cliente" className="mt-1 break-words text-2xl font-semibold tracking-tight">{atual.nome}</h1>
-                <div className="mt-3 flex flex-wrap gap-2"><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium">{atual.tipo === 'MENSALISTA' ? 'Mensalista' : 'Horista'}</span><span className={`rounded-full px-3 py-1 text-xs font-medium ${atual.ativo ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>{atual.ativo ? 'Ativo' : 'Inativo'}</span></div>
+              <div className="flex min-w-0 max-w-full items-start gap-4">
+                <span className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-primary sm:flex"><Icone nome="clientes" className="h-6 w-6" /></span>
+                <div className="min-w-0"><p className="text-xs font-bold tracking-wide text-muted uppercase">Ficha do cliente</p><h1 id="titulo-ficha-cliente" className="mt-2 break-words text-2xl font-extrabold tracking-tight sm:text-3xl">{atual.nome}</h1>
+                  <div className="mt-3 flex flex-wrap gap-2"><Selo tom="informacao">{atual.tipo === 'MENSALISTA' ? 'Mensalista' : 'Horista'}</Selo><Selo tom={atual.ativo ? 'sucesso' : 'neutro'}>{atual.ativo ? 'Ativo' : 'Inativo'}</Selo></div>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Botao variante="secundario" onClick={() => abrir('cliente')}>Editar dados</Botao>
+                <Botao variante="secundario" onClick={() => abrir('cliente')}><Icone nome="editar" />Editar dados</Botao>
                 {podeGerenciar && <MaisAcoes ariaLabel="Mais ações do cliente">
                   <Botao variante="secundario" className="w-full" disabled={carregando || (atual.ativo && Boolean(bloqueioInativacao))} onClick={() => abrir('situacao')}>{atual.ativo ? 'Inativar cliente' : 'Ativar cliente'}</Botao>
-                  {atual.ativo && bloqueioInativacao && <p className="px-1 text-xs text-slate-600">{bloqueioInativacao}</p>}
+                  {atual.ativo && bloqueioInativacao && <p className="px-1 text-xs text-muted">{bloqueioInativacao}</p>}
                 </MaisAcoes>}
               </div>
             </div>
-            <dl className="grid gap-4 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
-              <div><dt className="text-slate-500">CPF</dt><dd className="mt-1">{atual.cpf ? formatarCpf(atual.cpf) : 'Não informado'}</dd></div>
-              <div><dt className="text-slate-500">Telefone</dt><dd className="mt-1 break-words">{atual.telefone ? formatarTelefone(atual.telefone) : 'Não informado'}</dd></div>
+            <dl className="vp-record-details border-t border-slate-100 pt-5 sm:grid-cols-3">
+              <div><dt className="text-muted">CPF</dt><dd className="mt-1">{atual.cpf ? formatarCpf(atual.cpf) : 'Não informado'}</dd></div>
+              <div><dt className="text-muted">Telefone</dt><dd className="mt-1 break-words">{atual.telefone ? formatarTelefone(atual.telefone) : 'Não informado'}</dd></div>
               {(atual.tipo === 'MENSALISTA' || atual.vaga_cativa_id !== null) && <div>
-                <dt className="text-slate-500">Vaga cativa</dt><dd className="mt-1">{atual.vaga_cativa_numero ? `Vaga ${atual.vaga_cativa_numero}` : 'Sem vínculo'}</dd>
+                <dt className="text-muted">Vaga cativa</dt><dd className="mt-1">{atual.vaga_cativa_numero ? `Vaga ${atual.vaga_cativa_numero}` : 'Sem vínculo'}</dd>
                 {podeGerenciar && <><Botao variante="secundario" className="mt-2" disabled={carregando || atual.movimentacao_aberta || (!atual.ativo && atual.vaga_cativa_id === null)} onClick={() => abrir('vaga')}>Gerenciar vaga</Botao>
-                  {atual.movimentacao_aberta ? <p className="mt-2 text-xs text-amber-800">Registre as saídas antes de alterar a vaga cativa.</p> : !atual.ativo && atual.vaga_cativa_id === null && <p className="mt-2 text-xs text-slate-600">Ative o cliente para atribuir uma vaga cativa.</p>}</>}
+                  {atual.movimentacao_aberta ? <p className="mt-2 text-xs text-amber-800">Registre as saídas antes de alterar a vaga cativa.</p> : !atual.ativo && atual.vaga_cativa_id === null && <p className="mt-2 text-xs text-muted">Ative o cliente para atribuir uma vaga cativa.</p>}</>}
               </div>}
             </dl>
             {mensagem('cliente')}

@@ -16,7 +16,7 @@ export default function CamposCliente({ dados, onAlterar, erros = {}, autoFocus 
         <option value="HORISTA">Horista</option>
         <option value="MENSALISTA">Mensalista</option>
       </Select>
-      {bloquearTipo && <p className="text-sm text-amber-800">Registre a saída dos veículos estacionados antes de alterar o tipo do cliente.</p>}
+      {bloquearTipo && <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-900">Registre a saída dos veículos estacionados antes de alterar o tipo do cliente.</p>}
     </>
   );
 }

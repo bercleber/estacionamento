@@ -25,13 +25,13 @@ export default function ConfirmarSituacaoCliente({ cliente, onFechar, onConfirma
     <Modal titulo={`${acao} cliente`} onFechar={onFechar} bloqueada={enviando}>
       <form onSubmit={confirmar} className="space-y-5" aria-busy={enviando}>
         <p>Deseja {acao.toLowerCase()} o cliente <strong className="break-words">{cliente.nome}</strong>?</p>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           {cliente.ativo
             ? 'A inativação exige que o cliente esteja sem movimentação em aberto e sem vaga cativa. Seus veículos e histórico serão preservados.'
             : 'O cadastro do cliente voltará a ficar ativo.'}
         </p>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando} autoFocus>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Aplicando…' : acao}</Botao>
         </div>

@@ -28,13 +28,13 @@ export default function ConfirmarSituacaoVaga({ vaga, onFechar, onConfirmado }) 
     <Modal titulo={`${acao} vaga`} onFechar={onFechar} bloqueada={enviando}>
       <form onSubmit={confirmar} className="space-y-5" aria-busy={enviando}>
         <p>Deseja {acao.toLowerCase()} a vaga <strong className="break-words">{vaga.numero}</strong>?</p>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           {vaga.ativa
             ? 'A inativação só é permitida se a vaga não tiver movimentação em aberto nem vínculo com um cliente.'
             : 'A vaga voltará a ficar disponível, preservando seu número e histórico.'}
         </p>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando} autoFocus>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Aplicando…' : acao}</Botao>
         </div>

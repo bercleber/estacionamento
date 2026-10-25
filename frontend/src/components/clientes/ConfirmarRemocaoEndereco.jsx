@@ -19,11 +19,11 @@ export default function ConfirmarRemocaoEndereco({ cliente, endereco, onFechar, 
     <Modal titulo="Remover endereço" onFechar={onFechar} bloqueada={enviando}>
       <div className="space-y-5" aria-busy={enviando}>
         <p>Deseja remover o endereço <strong className="break-words">{endereco.logradouro}{endereco.numero ? `, ${endereco.numero}` : ''}</strong> de <strong>{cliente.nome}</strong>?</p>
-        {endereco.principal && cliente.enderecos.length > 1 && <p className="text-sm text-slate-600">O endereço restante mais antigo passará a ser o principal.</p>}
+        {endereco.principal && cliente.enderecos.length > 1 && <p className="text-sm text-muted">O endereço restante mais antigo passará a ser o principal.</p>}
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando} autoFocus>Cancelar</Botao>
-          <Botao onClick={confirmar} disabled={enviando}>{enviando ? 'Removendo…' : 'Remover endereço'}</Botao>
+          <Botao variante="perigo" onClick={confirmar} disabled={enviando}>{enviando ? 'Removendo…' : 'Remover endereço'}</Botao>
         </div>
       </div>
     </Modal>

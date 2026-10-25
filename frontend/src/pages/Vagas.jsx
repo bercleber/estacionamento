@@ -1,3 +1,9 @@
+import TituloPagina from '../components/ui/TituloPagina.jsx';
+import EstadoVazio from '../components/ui/EstadoVazio.jsx';
+import Icone from '../components/ui/Icone.jsx';
+import Selo from '../components/ui/Selo.jsx';
+import MaisAcoes from '../components/ui/MaisAcoes.jsx';
+import Carregando from '../components/ui/Carregando.jsx';
 import { useEffect, useState } from 'react';
 import FormularioVaga from '../components/vagas/FormularioVaga.jsx';
 import ConfirmarSituacaoVaga from '../components/vagas/ConfirmarSituacaoVaga.jsx';
@@ -7,10 +13,10 @@ import { listarVagas } from '../services/vagas.service.js';
 import { useAuth } from '../hooks/useAuth.js';
 
 const disponibilidades = {
-  LIVRE: { nome: 'Livre', estilo: 'bg-emerald-50 text-emerald-700' },
-  OCUPADA: { nome: 'Ocupada', estilo: 'bg-amber-50 text-amber-800' },
-  CATIVA: { nome: 'Cativa', estilo: 'bg-blue-50 text-blue-700' },
-  INATIVA: { nome: 'Inativa', estilo: 'bg-slate-100 text-slate-600' },
+  LIVRE: { nome: 'Livre', tom: 'sucesso' },
+  OCUPADA: { nome: 'Ocupada', tom: 'aviso' },
+  CATIVA: { nome: 'Cativa', tom: 'informacao' },
+  INATIVA: { nome: 'Inativa', tom: 'neutro' },
 };
 
 export default function Vagas() {
@@ -49,68 +55,44 @@ export default function Vagas() {
     setAtualizacao((atual) => atual + 1);
   }
 
+  function acoesVaga(vaga) {
+    if (!podeGerenciar) return null;
+    return <div className="flex flex-wrap gap-2">
+      <Botao variante="secundario" onClick={() => abrirFormulario(vaga)} aria-label={`Editar vaga ${vaga.numero}`}><Icone nome="editar" />Editar</Botao>
+      <MaisAcoes ariaLabel={`Mais ações da vaga ${vaga.numero}`}>
+        <Botao variante="secundario" className="w-full" onClick={() => { setSucesso(''); setVagaSituacao(vaga); }} aria-label={`${vaga.ativa ? 'Inativar' : 'Ativar'} vaga ${vaga.numero}`}>{vaga.ativa ? 'Inativar' : 'Ativar'} vaga</Botao>
+      </MaisAcoes>
+    </div>;
+  }
+
   return (
     <section aria-labelledby="titulo-vagas" className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 id="titulo-vagas" className="text-2xl font-semibold tracking-tight">Vagas</h1>
-          <p className="mt-2 text-sm text-slate-600">Consulte a disponibilidade das vagas do estacionamento.</p>
-        </div>
-        {podeGerenciar && <Botao onClick={() => abrirFormulario()}>Nova vaga</Botao>}
-      </div>
-
+      <TituloPagina id="titulo-vagas" icone="vagas" titulo="Vagas" descricao="Consulte a disponibilidade das vagas do estacionamento.">
+        {podeGerenciar && <Botao onClick={() => abrirFormulario()}><Icone nome="adicionar" />Nova vaga</Botao>}
+      </TituloPagina>
       <Mensagem tipo="sucesso">{sucesso}</Mensagem>
-      {erro && (
-        <div className="space-y-3">
-          <Mensagem>{erro}</Mensagem>
-          <Botao variante="secundario" onClick={() => setAtualizacao((atual) => atual + 1)}>Tentar novamente</Botao>
-        </div>
-      )}
-
-      {carregando ? <p role="status" className="text-sm text-slate-600">Carregando vagas…</p> : !erro && (
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-          <table className="w-full text-left text-sm">
-            <caption className="sr-only">Vagas cadastradas no estacionamento</caption>
-            <thead className="border-b border-slate-200 bg-slate-100/60 text-slate-600">
-              <tr>
-                <th scope="col" className="px-5 py-4 font-medium">Número</th>
-                <th scope="col" className="px-5 py-4 font-medium">Disponibilidade</th>
-                {podeGerenciar && <th scope="col" className="px-5 py-4 font-medium">Ações</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {vagas.map((vaga) => (
-                <tr key={vaga.id}>
-                  <td className="break-words px-5 py-4 font-medium">{vaga.numero}</td>
-                  <td className="px-5 py-4">
-                    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${disponibilidades[vaga.disponibilidade].estilo}`}>
-                      {disponibilidades[vaga.disponibilidade].nome}
-                    </span>
-                  </td>
-                  {podeGerenciar && (
-                    <td className="px-5 py-4">
-                      <div className="flex flex-wrap gap-2">
-                        <Botao variante="secundario" onClick={() => abrirFormulario(vaga)} aria-label={`Editar vaga ${vaga.numero}`}>
-                          Editar
-                        </Botao>
-                        <Botao
-                          variante="secundario"
-                          onClick={() => { setSucesso(''); setVagaSituacao(vaga); }}
-                          aria-label={`${vaga.ativa ? 'Inativar' : 'Ativar'} vaga ${vaga.numero}`}
-                        >
-                          {vaga.ativa ? 'Inativar' : 'Ativar'}
-                        </Botao>
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-              {vagas.length === 0 && (
-                <tr><td colSpan={podeGerenciar ? 3 : 2} className="px-5 py-8 text-center text-slate-500">Nenhuma vaga cadastrada.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      {erro && <div className="space-y-3"><Mensagem>{erro}</Mensagem><Botao variante="secundario" onClick={() => setAtualizacao((atual) => atual + 1)}>Tentar novamente</Botao></div>}
+      {carregando ? <Carregando>Carregando vagas…</Carregando> : !erro && (
+        vagas.length === 0 ? <EstadoVazio icone="vagas" titulo="Nenhuma vaga cadastrada" descricao={podeGerenciar ? 'Use “Nova vaga” para cadastrar uma vaga do estacionamento.' : 'As vagas aparecerão aqui após o cadastro.'} /> : (
+          <>
+            <p role="status" className="text-sm font-medium text-muted">{vagas.length} {vagas.length === 1 ? 'vaga cadastrada' : 'vagas cadastradas'}</p>
+            <div className="vp-panel hidden lg:block">
+              <table className="vp-table">
+                <caption className="sr-only">Vagas cadastradas no estacionamento</caption>
+                <thead><tr><th scope="col">Número</th><th scope="col">Disponibilidade</th>{podeGerenciar && <th scope="col">Ações</th>}</tr></thead>
+                <tbody>{vagas.map((vaga) => <tr key={vaga.id}>
+                  <td className="break-words text-lg font-bold tabular-nums">{vaga.numero}</td>
+                  <td><Selo tom={disponibilidades[vaga.disponibilidade].tom}>{disponibilidades[vaga.disponibilidade].nome}</Selo></td>
+                  {podeGerenciar && <td>{acoesVaga(vaga)}</td>}
+                </tr>)}</tbody>
+              </table>
+            </div>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:hidden">{vagas.map((vaga) => <li key={vaga.id} className="vp-panel min-w-0 space-y-5 p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-semibold text-muted">Vaga</p><h2 className="mt-1 break-all text-3xl font-extrabold tabular-nums">{vaga.numero}</h2></div><Selo tom={disponibilidades[vaga.disponibilidade].tom}>{disponibilidades[vaga.disponibilidade].nome}</Selo></div>
+              {podeGerenciar && <div className="border-t border-slate-100 pt-4">{acoesVaga(vaga)}</div>}
+            </li>)}</ul>
+          </>
+        )
       )}
 
       {podeGerenciar && formulario && (

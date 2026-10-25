@@ -1,12 +1,11 @@
-import { Link, Navigate, Outlet, useLocation } from 'react-router';
+import { Link, Navigate, Outlet } from 'react-router';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function RotaProtegida({ perfis }) {
   const { usuario } = useAuth();
-  const location = useLocation();
 
   if (!usuario) {
-    return <Navigate to="/login" replace state={{ de: location.pathname + location.search + location.hash }} />;
+    return <Navigate to="/login" replace />;
   }
 
   if (perfis && !perfis.includes(usuario.perfil)) {

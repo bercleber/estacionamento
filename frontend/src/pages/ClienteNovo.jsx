@@ -1,3 +1,5 @@
+import TituloPagina from '../components/ui/TituloPagina.jsx';
+import Icone from '../components/ui/Icone.jsx';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { cadastrarCliente } from '../services/clientes.service.js';
@@ -56,25 +58,22 @@ export default function ClienteNovo() {
 
   return (
     <section aria-labelledby="titulo-novo-cliente" className="mx-auto max-w-4xl space-y-6">
-      <Botao variante="secundario" onClick={() => navigate('/clientes')}>Voltar para clientes</Botao>
-      <div>
-        <h1 id="titulo-novo-cliente" className="text-2xl font-semibold tracking-tight">Novo cliente</h1>
-        <p className="mt-2 text-sm text-slate-600">Cadastre os dados do cliente e seu primeiro veículo. Os campos opcionais estão identificados.</p>
-      </div>
+      <Botao variante="secundario" onClick={() => navigate('/clientes')}><Icone nome="voltar" />Voltar para clientes</Botao>
+      <TituloPagina id="titulo-novo-cliente" icone="clientes" titulo="Novo cliente" descricao="Cadastre os dados do cliente e seu primeiro veículo. Os campos opcionais estão identificados." />
       <form ref={formRef} onSubmit={enviar} noValidate className="space-y-6" aria-busy={enviando}>
-        <fieldset disabled={enviando} className="min-w-0 space-y-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
-          <legend className="px-2 text-lg font-semibold">Dados do cliente</legend>
+        <fieldset disabled={enviando} className="min-w-0 vp-panel space-y-5 p-5 sm:p-7">
+          <legend className="px-2 text-lg font-bold tracking-tight"><span className="mr-2 text-sm text-primary">01</span>Dados do cliente</legend>
           <CamposCliente dados={dados} onAlterar={(event) => alterar(event, 'cliente')} erros={erros} autoFocus />
         </fieldset>
-        <fieldset disabled={enviando} className="min-w-0 space-y-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
-          <legend className="px-2 text-lg font-semibold">Primeiro veículo</legend>
-          <p className="text-sm text-slate-600">Obrigatório para cadastrar o cliente. Outros veículos podem ser adicionados depois, na ficha.</p>
+        <fieldset disabled={enviando} className="min-w-0 vp-panel space-y-5 p-5 sm:p-7">
+          <legend className="px-2 text-lg font-bold tracking-tight"><span className="mr-2 text-sm text-primary">02</span>Primeiro veículo</legend>
+          <p className="text-sm text-muted">Obrigatório para cadastrar o cliente. Outros veículos podem ser adicionados depois, na ficha.</p>
           <CamposVeiculo dados={veiculo} onAlterar={(event) => alterar(event, 'veiculo')} erros={erros} />
         </fieldset>
-        <section aria-labelledby="titulo-endereco-cadastro" className="space-y-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+        <section aria-labelledby="titulo-endereco-cadastro" className="vp-panel space-y-5 p-5 sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div><h2 id="titulo-endereco-cadastro" className="text-lg font-semibold">Endereço <span className="text-sm font-normal text-slate-500">(opcional)</span></h2>
-              <p className="mt-1 text-sm text-slate-600">Você também pode adicioná-lo depois, na ficha do cliente.</p></div>
+            <div><h2 id="titulo-endereco-cadastro" className="text-lg font-bold tracking-tight">Endereço <span className="text-sm font-normal text-muted">(opcional)</span></h2>
+              <p className="mt-1 text-sm text-muted">Você também pode adicioná-lo depois, na ficha do cliente.</p></div>
             <Botao variante="secundario" disabled={enviando} aria-expanded={comEndereco} aria-controls="campos-endereco-cadastro" onClick={() => {
               if (comEndereco && Object.values(endereco).some(Boolean) && !window.confirm('Deseja retirar este endereço do cadastro? Os dados preenchidos serão descartados.')) return;
               setComEndereco((atual) => !atual);
@@ -87,7 +86,7 @@ export default function ClienteNovo() {
           </fieldset>}
         </section>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-panel vp-form-actions p-5 sm:p-6">
           <Botao variante="secundario" disabled={enviando} onClick={() => navigate('/clientes')}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Cadastrando…' : 'Cadastrar cliente'}</Botao>
         </div>

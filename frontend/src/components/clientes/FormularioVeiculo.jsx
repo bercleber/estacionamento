@@ -46,13 +46,13 @@ export default function FormularioVeiculo({ cliente, veiculo = null, onFechar, o
   return (
     <Modal titulo={veiculo ? 'Editar veículo' : 'Adicionar veículo'} onFechar={fechar} bloqueada={enviando}>
       <form ref={formRef} onSubmit={enviar} noValidate className="space-y-5" aria-busy={enviando}>
-        <p className="break-words text-sm text-slate-600">Cliente: <strong>{cliente.nome}</strong></p>
+        <p className="break-words text-sm text-muted">Cliente: <strong>{cliente.nome}</strong></p>
         <fieldset disabled={enviando} className="space-y-5">
           <legend className="sr-only">Dados do veículo</legend>
           <CamposVeiculo dados={dados} onAlterar={alterar} erros={erros} autoFocus bloquearPlaca={veiculo?.movimentacao_aberta} />
         </fieldset>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={fechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : veiculo ? 'Salvar alterações' : 'Adicionar veículo'}</Botao>
         </div>

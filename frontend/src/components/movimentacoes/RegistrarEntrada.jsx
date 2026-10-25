@@ -1,3 +1,4 @@
+import Icone from '../ui/Icone.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { consultarEntrada, registrarEntrada } from '../../services/movimentacoes.service.js';
@@ -68,7 +69,7 @@ export default function RegistrarEntrada({ onFechar, onRegistrada }) {
     <Modal titulo="Registrar entrada" onFechar={onFechar} bloqueada={enviando}>
       <div className="space-y-5">
         <form onSubmit={buscar} className="space-y-4" aria-busy={buscando}>
-          <Campo label="Placa do veículo" name="placa" value={placa} maxLength={10}
+          <Campo label="Placa do veículo" name="placa" className="font-mono uppercase tracking-wider" value={placa} maxLength={10}
             autoComplete="off" autoCapitalize="characters" spellCheck={false} required autoFocus disabled={buscando || enviando}
             onChange={(event) => {
               setPlaca(event.target.value);
@@ -77,22 +78,22 @@ export default function RegistrarEntrada({ onFechar, onRegistrada }) {
               setErro('');
               setNaoCadastrado(false);
             }} />
-          <Botao type="submit" variante="secundario" disabled={buscando || enviando}>{buscando ? 'Consultando…' : 'Buscar placa'}</Botao>
+          <Botao type="submit" variante="secundario" disabled={buscando || enviando}><Icone nome="buscar" />{buscando ? 'Consultando…' : 'Buscar placa'}</Botao>
         </form>
 
         <Mensagem>{erro}</Mensagem>
-        {naoCadastrado && <Link to="/clientes" onClick={onFechar} className="inline-flex min-h-11 items-center rounded-lg text-sm font-medium underline underline-offset-4">Ir para clientes para cadastrar o veículo</Link>}
+        {naoCadastrado && <Link to="/clientes" onClick={onFechar} className="vp-button vp-button-secondary">Ir para clientes para cadastrar o veículo</Link>}
 
         {consulta && (
           <form onSubmit={confirmar} className="space-y-5 border-t border-slate-200 pt-5" aria-busy={enviando}>
-            <div className="space-y-3 rounded-xl bg-slate-50 p-4">
-              <p className="font-mono text-lg font-semibold tracking-wider">{consulta.veiculo.placa}</p>
-              <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                <div className="sm:col-span-2"><dt className="text-slate-500">Cliente</dt><dd className="mt-1 break-words font-medium">{consulta.cliente.nome}</dd></div>
-                <div><dt className="text-slate-500">Modelo</dt><dd className="mt-1 break-words">{consulta.veiculo.modelo ?? '—'}</dd></div>
-                <div><dt className="text-slate-500">Cor</dt><dd className="mt-1 break-words">{consulta.veiculo.cor ?? '—'}</dd></div>
+            <div className="vp-inset space-y-4">
+              <p className="vp-plate text-lg">{consulta.veiculo.placa}</p>
+              <dl className="vp-record-details sm:grid-cols-2">
+                <div className="sm:col-span-2"><dt className="text-muted">Cliente</dt><dd className="mt-1 break-words font-medium">{consulta.cliente.nome}</dd></div>
+                <div><dt className="text-muted">Modelo</dt><dd className="mt-1 break-words">{consulta.veiculo.modelo ?? '—'}</dd></div>
+                <div><dt className="text-muted">Cor</dt><dd className="mt-1 break-words">{consulta.veiculo.cor ?? '—'}</dd></div>
               </dl>
-              <p className="text-sm text-slate-600">{consulta.cliente.tipo === 'HORISTA'
+              <p className="text-sm text-muted">{consulta.cliente.tipo === 'HORISTA'
                 ? `Horista — tarifa atual de ${moeda.format(consulta.valor_hora)} por hora. O valor é fixado na confirmação.`
                 : 'Mensalista — sem cobrança por hora.'}</p>
             </div>
@@ -108,8 +109,8 @@ export default function RegistrarEntrada({ onFechar, onRegistrada }) {
               </Select>
             )}
             {consulta.cliente.tipo === 'MENSALISTA' && consulta.cliente.vaga_cativa_id !== null
-              && <p className="text-sm text-slate-600">Este cliente deve utilizar sua própria vaga cativa.</p>}
-            <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+              && <p className="text-sm text-muted">Este cliente deve utilizar sua própria vaga cativa.</p>}
+            <div className="vp-form-actions">
               <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
               <Botao type="submit" disabled={enviando || consulta.vagas_permitidas.length === 0}>{enviando ? 'Registrando…' : 'Confirmar entrada'}</Botao>
             </div>

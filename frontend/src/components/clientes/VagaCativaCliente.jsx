@@ -1,3 +1,4 @@
+import Carregando from '../ui/Carregando.jsx';
 import { useEffect, useState } from 'react';
 import { alterarVagaCativa, consultarCliente } from '../../services/clientes.service.js';
 import { listarVagas } from '../../services/vagas.service.js';
@@ -59,8 +60,8 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
   return (
     <Modal titulo="Vaga cativa" onFechar={fechar} bloqueada={enviando}>
       <div className="space-y-5">
-        <p className="break-words text-sm text-slate-600">Cliente: <strong>{atual.nome}</strong></p>
-        {carregando ? <p role="status" className="text-sm text-slate-600">Carregando vagas…</p> : erroCarga ? (
+        <p className="break-words text-sm text-muted">Cliente: <strong>{atual.nome}</strong></p>
+        {carregando ? <Carregando>Carregando vagas…</Carregando> : erroCarga ? (
           <div className="space-y-3">
             <Mensagem>{erroCarga}</Mensagem>
             <Botao variante="secundario" onClick={() => setAtualizacao((valor) => valor + 1)}>Tentar novamente</Botao>
@@ -71,14 +72,14 @@ export default function VagaCativaCliente({ cliente, onFechar, onSalvo }) {
               <option value="">Sem vaga cativa</option>
               {opcoes.map((vaga) => <option key={vaga.id} value={vaga.id}>Vaga {vaga.numero}{vaga.id === atual.vaga_cativa_id ? ' (atual)' : ''}</option>)}
             </Select>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted">
               {elegivel
                 ? 'São oferecidas vagas livres e a vaga atual. Para remover o vínculo, selecione “Sem vaga cativa”. O cliente precisa estar sem movimentação em aberto.'
                 : 'Somente mensalistas ativos podem receber uma vaga cativa. Um vínculo existente pode ser removido se não houver movimentação em aberto.'}
             </p>
-            {elegivel && !vagas.some((vaga) => vaga.disponibilidade === 'LIVRE') && <p className="text-sm text-slate-600">Não há novas vagas livres para atribuição.</p>}
+            {elegivel && !vagas.some((vaga) => vaga.disponibilidade === 'LIVRE') && <p className="text-sm text-muted">Não há novas vagas livres para atribuição.</p>}
             <Mensagem>{erro}</Mensagem>
-            <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+            <div className="vp-form-actions">
               <Botao variante="secundario" onClick={fechar} disabled={enviando}>Cancelar</Botao>
               <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar vínculo'}</Botao>
             </div>

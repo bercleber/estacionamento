@@ -31,16 +31,16 @@ export default function ConfirmarSituacaoUsuario({ usuario, onFechar, onConfirma
     <Modal titulo={`${acao} usuário`} onFechar={onFechar} bloqueada={enviando}>
       <form onSubmit={confirmar} className="space-y-5" aria-busy={enviando}>
         <p>Deseja {acao.toLowerCase()} o usuário <strong className="break-words">{usuario.nome}</strong>?</p>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           {usuario.ativo
             ? 'O usuário não poderá entrar no sistema e sua sessão atual será encerrada.'
             : 'O usuário poderá entrar novamente no sistema com suas credenciais.'}
         </p>
         {usuario.ativo && usuario.id === usuarioAtual.id && (
-          <p className="text-sm text-amber-800">Você está inativando sua própria conta e será desconectado.</p>
+          <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-900">Você está inativando sua própria conta e será desconectado.</p>
         )}
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando} autoFocus>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Aplicando…' : acao}</Botao>
         </div>

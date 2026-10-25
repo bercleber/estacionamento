@@ -5,6 +5,8 @@ import Botao from '../components/ui/Botao.jsx';
 import Campo from '../components/ui/Campo.jsx';
 import CampoSenha from '../components/ui/CampoSenha.jsx';
 import Mensagem from '../components/ui/Mensagem.jsx';
+import Marca from '../components/ui/Marca.jsx';
+import Icone from '../components/ui/Icone.jsx';
 
 export default function Login() {
   const { usuario, entrar } = useAuth();
@@ -14,11 +16,7 @@ export default function Login() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
 
-  const destino = location.state?.de;
-  const voltarPara = typeof destino === 'string' && destino.startsWith('/')
-    && !destino.startsWith('//') && !destino.startsWith('/login') ? destino : '/';
-
-  if (usuario) return <Navigate to={voltarPara} replace />;
+  if (usuario) return <Navigate to="/" replace />;
 
   async function enviar(event) {
     event.preventDefault();
@@ -37,26 +35,29 @@ export default function Login() {
   }
 
   return (
-    <main className="grid min-h-dvh place-items-center p-5">
-      <section aria-labelledby="titulo-login" className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-sm font-medium text-slate-500">Estacionamento</p>
-        <h1 id="titulo-login" className="mt-2 text-2xl font-semibold tracking-tight">Acesse sua conta</h1>
-        <p className="mt-2 text-sm text-slate-600">Informe seu login e sua senha para continuar.</p>
+    <main className="vp-login flex min-h-dvh flex-col items-center justify-center gap-6 px-4 py-10 sm:px-6">
+      <section aria-labelledby="titulo-login" className="vp-glass w-full max-w-md rounded-[1.75rem] p-6 sm:p-10">
+        <Marca />
+        <div className="mt-9">
+          <h1 id="titulo-login" className="text-3xl font-bold tracking-tight text-ink">Acesse sua conta</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted">Entre para gerenciar seu estacionamento.</p>
+        </div>
         {location.state?.senhaAlterada && (
           <div className="mt-5"><Mensagem tipo="sucesso">Senha alterada com sucesso. Entre novamente.</Mensagem></div>
         )}
-        <form onSubmit={enviar} className="mt-7 space-y-5" aria-busy={enviando}>
+        <form onSubmit={enviar} className="mt-8 space-y-5" aria-busy={enviando}>
           <Campo label="Login" name="login" autoComplete="username" required maxLength={100}
             value={login} onChange={(event) => setLogin(event.target.value)} disabled={enviando} />
           <CampoSenha label="Senha" id="login-senha" name="senha"
             autoComplete="current-password" required maxLength={128}
             value={senha} onChange={(event) => setSenha(event.target.value)} disabled={enviando} />
           <Mensagem>{erro}</Mensagem>
-          <Botao type="submit" disabled={enviando} className="w-full">
-            {enviando ? 'Entrando…' : 'Entrar'}
+          <Botao type="submit" disabled={enviando} className="min-h-12 w-full">
+            {enviando ? 'Entrando…' : 'Entrar'}<Icone nome="seta" />
           </Botao>
         </form>
       </section>
+      <p className="text-center text-sm font-medium text-muted">VParking. Tudo em seu lugar.</p>
     </main>
   );
 }

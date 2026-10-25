@@ -54,10 +54,10 @@ export default function FormularioSenha({ onFechar }) {
             autoComplete="new-password" minLength={8} maxLength={128} required />
           <CampoSenha label="Confirmar nova senha" name="confirmacao" value={dados.confirmacao} onChange={alterar}
             autoComplete="new-password" minLength={8} maxLength={128} required />
-          <p className="text-sm text-slate-600">A nova senha deve ter entre 8 e 128 caracteres. Após salvar, você precisará entrar novamente.</p>
+          <p className="text-sm text-muted">A nova senha deve ter entre 8 e 128 caracteres. Após salvar, você precisará entrar novamente.</p>
         </fieldset>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar nova senha'}</Botao>
         </div>

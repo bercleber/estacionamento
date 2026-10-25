@@ -8,14 +8,15 @@ export default function CampoSenha({ label, id, className = '', disabled = false
 
   return (
     <div className="space-y-2">
-      <label htmlFor={inputId} className="block text-sm font-medium">{label}</label>
+      <label htmlFor={inputId} className="block text-sm font-semibold text-ink">{label}</label>
       <div className="relative">
         <input {...props} id={inputId} type={visivel ? 'text' : 'password'} disabled={disabled}
-          className={`min-h-11 w-full rounded-lg border border-slate-300 bg-white py-2 pr-12 pl-3 text-base disabled:bg-slate-100 ${className}`} />
+          className={`vp-field pr-12 ${className}`} />
         <button type="button" disabled={disabled} aria-controls={inputId}
           aria-label={`${acao}: ${label}`} title={acao}
+          aria-pressed={visivel}
           onClick={() => setVisivel((atual) => !atual)}
-          className="absolute inset-y-0 right-0 inline-flex min-h-11 w-11 items-center justify-center rounded-r-lg text-slate-600 hover:text-slate-900 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-60">
+          className="absolute inset-y-0 right-0 inline-flex min-h-12 w-12 items-center justify-center rounded-r-xl text-muted hover:bg-blue-50 hover:text-primary focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-60">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}
             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" className="h-5 w-5">
             <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />

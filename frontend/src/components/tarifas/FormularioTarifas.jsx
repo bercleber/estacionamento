@@ -52,9 +52,9 @@ export default function FormularioTarifas({ tarifa = null, onFechar, onSalvo }) 
             onChange={(event) => setValorMes(event.target.value)} inputMode="decimal"
             maxLength={11} autoComplete="off" spellCheck={false} required />
         </fieldset>
-        <p className="text-sm text-slate-500">Use até duas casas decimais e não inclua separadores de milhar. Exemplo: 250,00.</p>
+        <p className="text-sm text-muted">Use até duas casas decimais e não inclua separadores de milhar. Exemplo: 250,00.</p>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>
             {enviando ? 'Salvando…' : tarifa ? 'Salvar alterações' : 'Cadastrar tarifas'}

@@ -32,8 +32,8 @@ export default function MaisAcoes({ label = 'Mais ações', ariaLabel, children 
         event.stopPropagation();
       }
     }}>
-      <summary aria-label={ariaLabel} className="flex min-h-11 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">{label} <span aria-hidden="true" className="ml-2">⋯</span></summary>
-      <div ref={menuRef} className="absolute z-20 mt-2 w-52 space-y-1 rounded-xl border border-slate-200 bg-white p-2 shadow-lg" onClick={(event) => {
+      <summary aria-label={ariaLabel} className="vp-button vp-button-secondary list-none">{label} <span aria-hidden="true">⋯</span></summary>
+      <div ref={menuRef} className="vp-menu absolute z-20 mt-2 w-52 space-y-1" onClick={(event) => {
         if (event.target.closest('button')) {
           ref.current.querySelector('summary').focus();
           ref.current.removeAttribute('open');

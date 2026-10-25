@@ -40,9 +40,9 @@ export default function FormularioVaga({ vaga = null, onFechar, onSalvo }) {
         <Campo label="Número da vaga" name="numero" value={numero} onChange={(event) => setNumero(event.target.value)}
           maxLength={10} autoComplete="off" autoCapitalize="characters" spellCheck={false}
           disabled={enviando} required autoFocus />
-        <p className="text-sm text-slate-500">Até 10 caracteres. Exemplos: 01, A01 ou B-02.</p>
+        <p className="text-sm text-muted">Até 10 caracteres. Exemplos: 01, A01 ou B-02.</p>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>
             {enviando ? 'Salvando…' : vaga ? 'Salvar alterações' : 'Cadastrar vaga'}

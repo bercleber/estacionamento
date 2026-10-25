@@ -21,7 +21,7 @@ const desenhos = {
 
 export default function IconePerfil({ perfil }) {
   return (
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50 text-blue-700">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}
         strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" className="h-6 w-6">
         {desenhos[perfil] ?? desenhos.OPERADOR}

@@ -8,7 +8,7 @@ export default function CamposVeiculo({ dados, onAlterar, autoFocus = false, err
         onAlterar(event);
       }} maxLength={10} erro={erros.placa} ajuda="Formatos aceitos: ABC1234 ou ABC1D23."
         autoComplete="off" autoCapitalize="characters" spellCheck={false} required autoFocus={autoFocus} disabled={bloquearPlaca} />
-      {bloquearPlaca && <p className="text-sm text-amber-800">Registre a saída do veículo antes de alterar sua placa.</p>}
+      {bloquearPlaca && <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-900">Registre a saída do veículo antes de alterar sua placa.</p>}
       <Campo label="Modelo (opcional)" name="modelo" value={dados.modelo} onChange={onAlterar} maxLength={100} />
       <Campo label="Cor (opcional)" name="cor" value={dados.cor} onChange={onAlterar} maxLength={40} />
     </>

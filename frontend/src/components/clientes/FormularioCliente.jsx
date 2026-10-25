@@ -49,10 +49,10 @@ export default function FormularioCliente({ cliente, onFechar, onSalvo }) {
         <fieldset disabled={enviando} className="space-y-5">
           <legend className="sr-only">Dados do cliente</legend>
           <CamposCliente dados={dados} onAlterar={alterar} erros={erros} autoFocus bloquearTipo={cliente.movimentacao_aberta} />
-          {cliente.vaga_cativa_id && dados.tipo === 'HORISTA' && <p className="text-sm text-amber-800">A vaga cativa precisa ser removida por administrador ou gerente antes da mudança para horista.</p>}
+          {cliente.vaga_cativa_id && dados.tipo === 'HORISTA' && <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-900">A vaga cativa precisa ser removida por administrador ou gerente antes da mudança para horista.</p>}
         </fieldset>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={fechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar alterações'}</Botao>
         </div>

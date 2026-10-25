@@ -25,11 +25,11 @@ export default function ConfirmarSituacaoVeiculo({ cliente, veiculo, onFechar, o
     <Modal titulo={`${acao} veículo`} onFechar={onFechar} bloqueada={enviando}>
       <form onSubmit={confirmar} className="space-y-5" aria-busy={enviando}>
         <p>Deseja {acao.toLowerCase()} o veículo <strong>{veiculo.placa}</strong> de <strong className="break-words">{cliente.nome}</strong>?</p>
-        <p className="text-sm text-slate-600">{veiculo.ativo
+        <p className="text-sm text-muted">{veiculo.ativo
           ? 'O veículo precisa estar sem movimentação em aberto. Seu cadastro e histórico serão preservados.'
           : 'A ativação exige que o cliente também esteja ativo.'}</p>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando} autoFocus>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>{enviando ? 'Aplicando…' : acao}</Botao>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react';
+import Icone from './Icone.jsx';
 
 export default function Modal({ titulo, onFechar, bloqueada = false, ampla = false, children }) {
   const ref = useRef(null);
@@ -25,20 +26,22 @@ export default function Modal({ titulo, onFechar, bloqueada = false, ampla = fal
         event.preventDefault();
         if (!bloqueada) onFechar();
       }}
-      className={`m-auto max-h-[calc(100dvh_-_2rem)] w-[calc(100%_-_2rem)] ${ampla ? 'max-w-3xl' : 'max-w-xl'} overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-xl backdrop:bg-slate-950/50`}
+      className={`vp-dialog m-auto max-h-[calc(100dvh_-_2rem)] w-[calc(100%_-_2rem)] ${ampla ? 'max-w-3xl' : 'max-w-xl'} overflow-y-auto`}
     >
-      <header className="flex items-center justify-between gap-4 border-b border-slate-200 p-5 sm:px-6">
-        <h2 id={tituloId} className="text-lg font-semibold">{titulo}</h2>
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white p-5 sm:px-6">
+        <h2 id={tituloId} className="text-lg font-bold tracking-tight">{titulo}</h2>
         <button
           type="button"
           onClick={onFechar}
           disabled={bloqueada}
-          className="min-h-11 rounded-lg px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="vp-button vp-button-secondary h-11 w-11 shrink-0 p-0"
+          aria-label="Fechar janela"
+          title="Fechar janela"
         >
-          Fechar
+          <Icone nome="fechar" />
         </button>
       </header>
-      <div className="p-5 sm:p-6">{children}</div>
+      <div className="vp-dialog-body">{children}</div>
     </dialog>
   );
 }

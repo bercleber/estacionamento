@@ -75,15 +75,15 @@ export default function FormularioUsuario({ usuario = null, onFechar, onSalvo })
                 <CampoSenha label="Confirmar senha" name="confirmacao" value={dados.confirmacao} onChange={alterar}
                   autoComplete="new-password" minLength={8} maxLength={128} required />
               </div>
-              <p className="text-sm text-slate-500">A senha deve ter entre 8 e 128 caracteres.</p>
+              <p className="text-sm text-muted">A senha deve ter entre 8 e 128 caracteres.</p>
             </>
           )}
           {editando && usuario.id === usuarioAtual.id && dados.perfil !== usuarioAtual.perfil && (
-            <p className="text-sm text-amber-800">Ao alterar seu próprio perfil, sua sessão será encerrada e será necessário entrar novamente.</p>
+            <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-900">Ao alterar seu próprio perfil, sua sessão será encerrada e será necessário entrar novamente.</p>
           )}
         </fieldset>
         <Mensagem>{erro}</Mensagem>
-        <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="vp-form-actions">
           <Botao variante="secundario" onClick={onFechar} disabled={enviando}>Cancelar</Botao>
           <Botao type="submit" disabled={enviando}>
             {enviando ? 'Salvando…' : editando ? 'Salvar alterações' : 'Cadastrar usuário'}
